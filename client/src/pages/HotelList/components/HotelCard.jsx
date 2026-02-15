@@ -8,7 +8,10 @@ export default function HotelCard({ data }) {
         marginBottom: '12px',
       }}
     >
-      <h4>{data.name}</h4>
+      {/* 这里需要注意数据结构的对应 */}
+      <h4>
+        {data.name?.cn} ({data.name?.en})
+      </h4>
       <p>评分: {data.score}</p>
       <p>地址: {data.address}</p>
       <p>价格: ¥{data.price}</p>
