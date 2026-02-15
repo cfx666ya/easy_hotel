@@ -1,18 +1,26 @@
 import { useState, useEffect, useRef } from 'react';
+import { useSearchParams, useNavigate } from 'react-router-dom';
+
 import { getHotelList } from '../../api/hotel';
 import SearchBar from './components/SearchBar';
 import FilterPanel from './components/FilterPanel';
 import HotelList from './components/HotelList';
-import { useLocation } from 'react-router-dom';
 
 export default function HotelListPage() {
+  // 用于处理 searchBar 中的城市定位
+  const [searchParams] = useSearchParams();
+
+  const navigate = useNavigate();
+
   // 查询条件
   const [query, setQuery] = useState({
-    city: '上海',
+    // city: '上海',
+    city: searchParams.get('city') || '上海',
     checkIn: '',
     checkOut: '',
     nights: 1, // 间夜，派生状态
-    keyword: '',
+    // keyword: '',
+    keyword: searchParams.get('keyword') || '',
     cursor: 0, // 分页时要取数据的 id
     limit: 3, // 要取多少个数据
     minPrice: '',
@@ -20,9 +28,6 @@ export default function HotelListPage() {
     score: '',
     sortBy: '',
   });
-
-  // 用于处理 searchBar 中的城市定位
-  const location = useLocation();
 
   // 酒店数据
   const [hotelList, setHotelList] = useState([]);
@@ -94,13 +99,28 @@ export default function HotelListPage() {
   ]);
 
   // 处理返回城市
+  // useEffect(() => {
+  //   if (location.state?.city) {
+  //     handleSearchChange({
+  //       city: location.state.city,
+  //     });
+  //   }
+  // }, [location.state]);
+
   useEffect(() => {
-    if (location.state?.city) {
-      handleSearchChange({
-        city: location.state.city,
-      });
-    }
-  }, [location.state]);
+    const city = searchParams.get('city');
+    const keyword = searchParams.get('keyword');
+
+    setHotelList([]);
+    setHasMore(true);
+
+    setQuery((prev) => ({
+      ...prev,
+      city: city || '上海',
+      keyword: keyword || '',
+      cursor: 0,
+    }));
+  }, [searchParams]);
 
   /**
    * 点击加载更多
@@ -110,20 +130,23 @@ export default function HotelListPage() {
     fetchHotels();
   };
 
-  /**
-   * 当筛选条件变化时
-   * 需要重置 page = 1
-   */
   const handleSearchChange = (newQuery) => {
-    console.log('newQuery', newQuery);
-    setHotelList([]); // 清空旧数据
-    setHasMore(true);
-
-    setQuery((prev) => ({
-      ...prev,
+    const updatedQuery = {
+      ...query,
       ...newQuery,
-      cursor: 0, // ⚠️ 重置分页
-    }));
+      cursor: 0,
+    };
+
+    const params = new URLSearchParams({
+      city: updatedQuery.city,
+      keyword: updatedQuery.keyword,
+    });
+
+    navigate(`/hotel-list?${params.toString()}`);
+
+    setHotelList([]);
+    setHasMore(true);
+    setQuery(updatedQuery);
   };
 
   return (
