@@ -5,22 +5,23 @@ import { getHotelList } from '../../api/hotel';
 import SearchBar from './components/SearchBar';
 import FilterPanel from './components/FilterPanel';
 import HotelList from './components/HotelList';
+import DatePickerModal from './components/DatePickerModal';
 
 export default function HotelListPage() {
-  // 用于处理 searchBar 中的城市定位
+  // 用于切换页面时保留数据
   const [searchParams] = useSearchParams();
 
   const navigate = useNavigate();
 
   // 查询条件
+  // 使用 searchParams 在切换页面时，选择的数据可以保留
+  // 后面考虑使用 redux 代替
   const [query, setQuery] = useState({
-    // city: '上海',
     city: searchParams.get('city') || '上海',
-    checkIn: '',
-    checkOut: '',
-    nights: 1, // 间夜，派生状态
-    // keyword: '',
     keyword: searchParams.get('keyword') || '',
+    checkIn: searchParams.get('checkIn') || '',
+    checkOut: searchParams.get('checkOut') || '',
+    nights: Number(searchParams.get('nights')) || 1, // 间夜，派生状态
     cursor: 0, // 分页时要取数据的 id
     limit: 3, // 要取多少个数据
     minPrice: '',
@@ -83,9 +84,10 @@ export default function HotelListPage() {
     fetchHotels();
   }, []);
 
-  //
+  // 当查询条件改变时，清空 hotelList 并重置 hasMore
   useEffect(() => {
-    // 重置 cursor
+    setHotelList([]);
+    setHasMore(true);
     fetchHotels();
   }, [
     query.city,
@@ -98,18 +100,13 @@ export default function HotelListPage() {
     query.sortBy,
   ]);
 
-  // 处理返回城市
-  // useEffect(() => {
-  //   if (location.state?.city) {
-  //     handleSearchChange({
-  //       city: location.state.city,
-  //     });
-  //   }
-  // }, [location.state]);
-
+  // searchParams 变化时，执行的 useEffect
   useEffect(() => {
     const city = searchParams.get('city');
     const keyword = searchParams.get('keyword');
+    const checkIn = searchParams.get('checkIn');
+    const checkOut = searchParams.get('checkOut');
+    const nights = searchParams.get('nights');
 
     setHotelList([]);
     setHasMore(true);
@@ -118,6 +115,9 @@ export default function HotelListPage() {
       ...prev,
       city: city || '上海',
       keyword: keyword || '',
+      checkIn: checkIn || '',
+      checkOut: checkOut || '',
+      nights: Number(nights) || 1,
       cursor: 0,
     }));
   }, [searchParams]);
@@ -140,6 +140,9 @@ export default function HotelListPage() {
     const params = new URLSearchParams({
       city: updatedQuery.city,
       keyword: updatedQuery.keyword,
+      checkIn: updatedQuery.checkIn || '',
+      checkOut: updatedQuery.checkOut || '',
+      nights: updatedQuery.nights || '',
     });
 
     navigate(`/hotel-list?${params.toString()}`);
@@ -149,9 +152,17 @@ export default function HotelListPage() {
     setQuery(updatedQuery);
   };
 
+  // 管理日历组件
+  const [showCalendar, setShowCalendar] = useState(false);
+
   return (
     <div className="hotel-list-page">
-      <SearchBar query={query} onSearch={handleSearchChange} />
+      <SearchBar
+        query={query}
+        onSearch={handleSearchChange}
+        onOpenCalendar={() => setShowCalendar(true)}
+      />
+
       <FilterPanel query={query} onSearch={handleSearchChange} />
 
       <HotelList
@@ -159,6 +170,21 @@ export default function HotelListPage() {
         loading={loading}
         hasMore={hasMore}
         onLoadMore={handleLoadMore}
+      />
+
+      <DatePickerModal
+        visible={showCalendar}
+        onClose={() => setShowCalendar(false)}
+        defaultCheckIn={query.checkIn}
+        defaultCheckOut={query.checkOut}
+        onConfirm={(checkIn, checkOut, nights) => {
+          handleSearchChange({
+            checkIn,
+            checkOut,
+            nights,
+          });
+          setShowCalendar(false);
+        }}
       />
     </div>
   );

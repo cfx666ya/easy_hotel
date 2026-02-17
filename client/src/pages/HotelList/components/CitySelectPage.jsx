@@ -3,7 +3,8 @@
  * 在【酒店列表页】的搜索框点击【城市】后，进入该页面
  */
 import { useState, useEffect, useRef } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
+import { buildHotelListQuery } from '../../../utils/hotelQuery';
 
 export default function CitySelectPage() {
   const navigate = useNavigate();
@@ -701,9 +702,20 @@ export default function CitySelectPage() {
   // react 思维：【状态变化】驱动【UI 变化】，所以后面 color: activeLetter === letter ? '#1890ff' : '#333'
   const [activeLetter, setActiveLetter] = useState('热门');
 
+  const [searchParams] = useSearchParams();
   // 点击城市
   const handleSelectCity = (city) => {
-    navigate(`/hotel-list?city=${city}`);
+    const currentQuery = {
+      city,
+      keyword: searchParams.get('keyword') || '',
+      checkIn: searchParams.get('checkIn') || '',
+      checkOut: searchParams.get('checkOut') || '',
+      nights: searchParams.get('nights') || '',
+    };
+
+    const queryString = buildHotelListQuery(currentQuery);
+
+    navigate(`/hotel-list?${queryString}`);
   };
 
   // 滑动右侧索引目录，或者点击时触发的滚动函数
