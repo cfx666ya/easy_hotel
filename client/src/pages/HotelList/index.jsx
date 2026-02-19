@@ -29,6 +29,8 @@ export default function HotelListPage() {
     maxPrice: searchParams.get('maxPrice') || '',
     score: searchParams.get('score') || '',
     sortBy: searchParams.get('sortBy') || '',
+    poiId: searchParams.get('poiId') || '',
+    distance: searchParams.get('distance') || '',
   });
 
   const [hotelList, setHotelList] = useState([]); // 酒店列表数据
@@ -103,6 +105,8 @@ export default function HotelListPage() {
     query.maxPrice,
     query.score,
     query.sortBy,
+    query.poiId,
+    query.distance,
   ]);
 
   // searchParams 变化时，将 url 参数变化时同步到 query
@@ -119,6 +123,8 @@ export default function HotelListPage() {
       sortBy: searchParams.get('sortBy') || '',
       cursor: 0,
       limit: searchParams.get('limit') || 3,
+      poiId: searchParams.get('poiId') || '',
+      distance: searchParams.get('distance') || '',
     };
 
     setQuery(newQuery);
@@ -131,6 +137,7 @@ export default function HotelListPage() {
     fetchHotels();
   };
 
+  // 传入 FilterPanel 的函数，传回的 newQuery 为 poiId 和 distance
   const handleSearchChange = (newQuery) => {
     // 更新 query
     const updatedQuery = {

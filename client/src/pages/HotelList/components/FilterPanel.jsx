@@ -1,13 +1,17 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { getPoiList, getHotelCountByPoi } from '../../../api/hotel';
 
-export default function FilterPanel() {
-  // 当前激活的 tab
+const DISTANCES = [1, 2, 3, 4, 5];
+
+export default function FilterPanel({ query, onSearch }) {
   const [activeTab, setActiveTab] = useState(null);
-
-  // 左侧导航当前选中
   const [activeLeftNav, setActiveLeftNav] = useState('hot');
+  const [selectedPoi, setSelectedPoi] = useState(null);
+  const [selectedDistance, setSelectedDistance] = useState(null);
+  const [previewCount, setPreviewCount] = useState(300);
+  const [pois, setPois] = useState([]); // 当前城市的 POI 列表
+  const [loadingPoi, setLoadingPoi] = useState(false);
 
-  // 左侧导航数据（静态）
   const LEFT_NAV = [
     { key: 'hot', label: '热门推荐' },
     { key: 'sight', label: '观光景点' },
@@ -18,49 +22,119 @@ export default function FilterPanel() {
     { key: 'hospital', label: '医院' },
   ];
 
-  // 右侧假数据（模拟北京）
-  const RIGHT_DATA = {
-    hot: ['天安门广场', '王府井', '前门大街'],
-    sight: ['故宫', '颐和园', '八达岭长城'],
-    business: ['国贸', '三里屯', '中关村'],
-    district: ['朝阳区', '海淀区', '西城区'],
-    station: ['北京南站', '北京西站', '首都机场'],
-    school: ['清华大学', '北京大学', '人民大学'],
-    hospital: ['协和医院', '301医院', '朝阳医院'],
+  // 获取当前城市的 POI
+  // 监听 query.city
+  useEffect(() => {
+    const city = query.city;
+    if (!city) return;
+
+    const fetchPois = async () => {
+      setLoadingPoi(true);
+      try {
+        const data = await getPoiList(city); // 直接返回解析后的数据
+        setPois(data);
+      } catch (error) {
+        console.error('Failed to fetch POIs:', error);
+      } finally {
+        setLoadingPoi(false);
+      }
+    };
+
+    fetchPois();
+  }, [query.city]);
+
+  // 根据当前左侧导航类型，过滤右侧 POI 列表，挑选 pois 列表中 type 与左侧对应的
+  // 当 activeLeftNav 改变时，由于 useState 会重新渲染整个 FilterPanel 组件，所以这行代码会再次执行
+  const rightPois = pois.filter((p) => p.type === activeLeftNav);
+
+  // 当选择距离时，获取该条件下酒店总数用于预览
+  // 注意这次请求并不改变主酒店列表，仅用于预览数字
+  const handleSelectDistance = async (d) => {
+    setSelectedDistance(d);
+    if (!selectedPoi) return;
+
+    try {
+      const data = await getHotelCountByPoi(selectedPoi.id, d);
+      setPreviewCount(data.total);
+    } catch (error) {
+      console.error('Failed to fetch count:', error);
+    }
   };
 
-  // 切换顶部tab
-  const handleTabClick = (tab) => {
-    setActiveTab((prev) => (prev === tab ? null : tab));
+  const handleSelectPoi = (poi) => {
+    setSelectedPoi(poi);
+    setSelectedDistance(null);
+    setPreviewCount(300); // 重置预览数
   };
+
+  const handleClear = () => {
+    setSelectedPoi(null);
+    setSelectedDistance(null);
+    setPreviewCount(300);
+    onSearch({ poiId: '', distance: '' });
+  };
+
+  const handleConfirm = () => {
+    // 调用回调函数，传回参数为 poiId 和 distance
+    onSearch({
+      poiId: selectedPoi?.id || '',
+      distance: selectedDistance || '',
+    });
+    // 关闭下拉面板
+    setActiveTab(null);
+  };
+
+  // 当用户筛选位置后，用具体位置替换原来的 label
+  const getLocationLabel = () => {
+    if (!selectedPoi) return '位置/距离';
+    if (!selectedDistance) return selectedPoi.name;
+    return `${selectedPoi.name} · ${selectedDistance}km内`;
+  };
+
+  // ... 定位逻辑保留不变 ...
 
   return (
     <div className="filter-panel-wrapper">
-      {/* ===== 顶部 FilterBar ===== */}
+      {/* FilterBar */}
       <div className="filter-bar">
         <div
           className={`filter-item ${activeTab === 'location' ? 'active' : ''}`}
-          onClick={() => handleTabClick('location')}
+          onClick={() =>
+            setActiveTab((prev) => (prev === 'location' ? null : 'location'))
+          }
         >
-          位置/距离 ▼
+          {getLocationLabel()} ▼
         </div>
         <div className="filter-item">价格/星级 ▼</div>
         <div className="filter-item">居数/床数 ▼</div>
         <div className="filter-item">筛选/排序 ▼</div>
       </div>
 
-      {/* ===== Panel（只在点击 位置/距离 时显示）===== */}
+      {/* Panel */}
+      {/* 如果用户选择了【位置/距离】，则显示该 panel */}
       {activeTab === 'location' && (
         <div className="panel">
+          {/* 如果用户选择了具体位置，例如人民广场，则显示【距离bar】 */}
+          {selectedPoi && (
+            <div className="distance-bar">
+              {DISTANCES.map((d) => (
+                <div
+                  key={d}
+                  className={`distance-item ${selectedDistance === d ? 'active' : ''}`}
+                  onClick={() => handleSelectDistance(d)}
+                >
+                  {d}km内
+                </div>
+              ))}
+            </div>
+          )}
+
           <div className="panel-content">
-            {/* 左侧导航 */}
             <div className="left-nav">
               {LEFT_NAV.map((item) => (
                 <div
                   key={item.key}
-                  className={`left-nav-item ${
-                    activeLeftNav === item.key ? 'active' : ''
-                  }`}
+                  className={`left-nav-item ${activeLeftNav === item.key ? 'active' : ''}`}
                   onClick={() => setActiveLeftNav(item.key)}
                 >
                   {item.label}
@@ -68,20 +142,30 @@ export default function FilterPanel() {
               ))}
             </div>
 
-            {/* 右侧内容 */}
             <div className="right-content">
-              {RIGHT_DATA[activeLeftNav].map((name, index) => (
-                <div key={index} className="right-item">
-                  {name}
-                </div>
-              ))}
+              {loadingPoi ? (
+                <div>加载中...</div>
+              ) : (
+                rightPois.map((poi) => (
+                  <div
+                    key={poi.id}
+                    className={`right-item ${selectedPoi?.id === poi.id ? 'active' : ''}`}
+                    onClick={() => handleSelectPoi(poi)}
+                  >
+                    {poi.name}
+                  </div>
+                ))
+              )}
             </div>
           </div>
 
-          {/* 底部按钮 */}
           <div className="panel-footer">
-            <button className="clear-btn">清空</button>
-            <button className="confirm-btn">查看房屋（300套以上可订）</button>
+            <button className="clear-btn" onClick={handleClear}>
+              清空
+            </button>
+            <button className="confirm-btn" onClick={handleConfirm}>
+              查看房屋（{previewCount}套以上可订）
+            </button>
           </div>
         </div>
       )}
