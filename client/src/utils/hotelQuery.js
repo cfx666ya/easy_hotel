@@ -6,11 +6,11 @@
  */
 
 export const buildHotelListQuery = (query) => {
-  return new URLSearchParams({
-    city: query.city || '',
-    keyword: query.keyword || '',
-    checkIn: query.checkIn || '',
-    checkOut: query.checkOut || '',
-    nights: query.nights || '',
-  }).toString();
+  const params = new URLSearchParams();
+  Object.entries(query).forEach(([key, value]) => {
+    if (value && key !== 'cursor' && key !== 'limit') {
+      params.set(key, value.toString());
+    }
+  });
+  return params.toString();
 };

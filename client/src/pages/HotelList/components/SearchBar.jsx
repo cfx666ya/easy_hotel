@@ -2,7 +2,12 @@ import { useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { buildHotelListQuery } from '../../../utils/hotelQuery';
 
-export default function SearchBar({ query, onSearch, onOpenCalendar }) {
+export default function SearchBar({
+  query,
+  keyword,
+  onSearch,
+  onOpenCalendar,
+}) {
   const navigate = useNavigate();
   const [showPanel, setShowPanel] = useState(false);
 
@@ -84,22 +89,13 @@ export default function SearchBar({ query, onSearch, onOpenCalendar }) {
     navigate(`/city-select?${queryString}`);
   };
 
-  const handleKeywordClick = () => {
-    const currentQuery = {
-      city: searchParams.get('city') || '',
-      keyword: searchParams.get('keyword') || '',
-      checkIn: searchParams.get('checkIn') || '',
-      checkOut: searchParams.get('checkOut') || '',
-      nights: searchParams.get('nights') || '',
-    };
-
-    const queryString = buildHotelListQuery(currentQuery);
-    navigate(`/city-select?${queryString}`);
-  };
-
+  // 点击【下弹框】中的确定
   const handleConfirm = () => {
     setShowPanel(false);
   };
+
+  // 增加 input 状态
+  const [inputValue, setInputValue] = useState(keyword || '');
 
   return (
     <div className="search-bar">
@@ -117,8 +113,23 @@ export default function SearchBar({ query, onSearch, onOpenCalendar }) {
         </div>
 
         {/* 右部分 */}
-        <div className="search-keyword" onClick={handleKeywordClick}>
-          🔍 搜索
+        <div className="search-keyword-box">
+          <input
+            type="text"
+            placeholder={`搜索${query.city}的位置/酒店名称`}
+            value={inputValue}
+            onChange={(e) => setInputValue(e.target.value)}
+          />
+
+          {inputValue && (
+            <span className="clear-btn" onClick={() => setInputValue('')}>
+              ✖
+            </span>
+          )}
+
+          <button className="search-btn" onClick={() => onSearch(inputValue)}>
+            搜索
+          </button>
         </div>
       </div>
 

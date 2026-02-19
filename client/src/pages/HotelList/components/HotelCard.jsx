@@ -1,4 +1,23 @@
-export default function HotelCard({ data }) {
+// 高亮函数
+const highlightText = (text, keyword) => {
+  if (!keyword) return text;
+
+  const parts = text.split(keyword);
+
+  return parts.reduce((prev, curr, index) => {
+    if (index === 0) return [curr];
+
+    return [
+      ...prev,
+      <span style={{ color: 'blue' }} key={index}>
+        {keyword}
+      </span>,
+      curr,
+    ];
+  }, []);
+};
+
+export default function HotelCard({ data, keyword }) {
   return (
     <div
       className="hotel-card"
@@ -10,7 +29,7 @@ export default function HotelCard({ data }) {
     >
       {/* 这里需要注意数据结构的对应 */}
       <h4>
-        {data.name?.cn} ({data.name?.en})
+        {highlightText(data.name?.cn || '', keyword)} ({data.name?.en})
       </h4>
       <p>评分: {data.score}</p>
       <p>地址: {data.address}</p>

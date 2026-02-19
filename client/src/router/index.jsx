@@ -13,6 +13,7 @@ const HotelDetail = lazy(() => import('../pages/HotelDetail'));
 const CitySelectPage = lazy(
   () => import('../pages/HotelList/components/CitySelectPage'),
 );
+const SearchPage = lazy(() => import('../pages/SearchPage'));
 
 /* ==================== 加载中组件 ==================== */
 
@@ -43,6 +44,9 @@ function AppRoutes() {
 
         {/* 城市选择页 */}
         <Route path="/city-select" element={<CitySelectPage />} />
+
+        {/* 搜索页 */}
+        <Route path="/search" element={<SearchPage />} />
 
         {/* 重定向示例 */}
         <Route path="/list" element={<Navigate to="/hotel-list" replace />} />

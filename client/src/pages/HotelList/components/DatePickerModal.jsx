@@ -1,7 +1,7 @@
 /**
  * 高级日期区间选择组件
  */
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useMemo } from 'react';
 
 const WEEK_DAYS = ['日', '一', '二', '三', '四', '五', '六'];
 
@@ -28,18 +28,27 @@ function generateYearMonths() {
   return months;
 }
 
+// 用于生成一个月的所有日期数据
 function generateMonthDays(year, month) {
+  // 小技巧：
+  // new Date(year, month, 1)中，month表示当月，day为1表示当月第一天
+  // new Date(year, month + 1, 0) 中，month + 1 表示下个月，day为0表示上个月的最后一天
   const firstDay = new Date(year, month, 1);
   const lastDay = new Date(year, month + 1, 0);
 
   const days = [];
 
-  // 前面补空
+  // 获取当月第一天是星期几（0-6，0代表周日）
   const startWeek = firstDay.getDay();
+
+  // 前面补空：根据第一天是星期几，在数组前面插入对应数量的null
+  // 例如：如果1号是周三(startWeek=3)，则前面需要补3个null
   for (let i = 0; i < startWeek; i++) {
     days.push(null);
   }
 
+  // 生成当月所有的日期，push 进 days 中，new Date 会根据年月日生成包括【星期、年月日、东8市区】的日期
+  // lastDay.getDate() 获取当月的总天数
   for (let i = 1; i <= lastDay.getDate(); i++) {
     days.push(new Date(year, month, i));
   }
@@ -48,50 +57,60 @@ function generateMonthDays(year, month) {
 }
 
 export default function DatePickerModal({
-  visible,
-  onClose,
-  onConfirm,
-  defaultCheckIn,
-  defaultCheckOut,
+  visible, // 是否可见
+  onClose, // 用户点击【关闭】的 callback 函数
+  defaultCheckIn, // 在 query 中的 checkIn
+  defaultCheckOut, // 在 query 中的 checkOut
+  onConfirm, // 用户点击【完成】的 callback 函数
 }) {
+  // 使用 useMemo，在重新渲染时不需要重复计算 today 这个内容，它只在组件挂载时创建一次
   const today = useMemo(() => {
     const d = new Date();
     d.setHours(0, 0, 0, 0);
     return d;
   }, []);
 
-  const tomorrow = useMemo(() => {
-    const d = new Date(today);
-    d.setDate(d.getDate() + 1);
-    return d;
-  }, [today]);
+  // 同样使用 useMemo，依赖 today，只在 today 变化时重新计算
+  // const tomorrow = useMemo(() => {
+  //   const d = new Date(today);
+  //   d.setDate(d.getDate() + 1);
+  //   return d;
+  // }, [today]);
 
-  const [checkIn, setCheckIn] = useState(today);
-  const [checkOut, setCheckOut] = useState(tomorrow);
+  // 用于在日历中高亮
+  const [checkIn, setCheckIn] = useState(new Date(defaultCheckIn));
+  const [checkOut, setCheckOut] = useState(new Date(defaultCheckOut));
 
-  useEffect(() => {
-    if (defaultCheckIn && defaultCheckOut) {
-      setCheckIn(new Date(defaultCheckIn));
-      setCheckOut(new Date(defaultCheckOut));
-    }
-  }, [defaultCheckIn, defaultCheckOut]);
+  // useEffect(() => {
+  //   if (defaultCheckIn && defaultCheckOut) {
+  //     setCheckIn(new Date(defaultCheckIn));
+  //     setCheckOut(new Date(defaultCheckOut));
+  //   }
+  // }, [defaultCheckIn, defaultCheckOut]);
 
+  // 获取当天的月份
   const months = generateYearMonths();
 
+  // 处理选中
   const handleSelect = (date) => {
+    // 如果 date 在 today 之前，直接 return，实际上因为禁用也选不中
     if (isBefore(date, today)) return;
 
     if (!checkIn || (checkIn && checkOut)) {
+      // 如果没选【入住】，或者【入住】和【离店】都选了，那么再点击的日期作为新【入住】
       setCheckIn(date);
       setCheckOut(null);
     } else if (date > checkIn) {
+      // 如果选了【入住】，再次选中的日期作为【离店】
       setCheckOut(date);
     } else {
+      // 如果都没选，再次选中的日期作为【入住】
       setCheckIn(date);
       setCheckOut(null);
     }
   };
 
+  // 派生数据，间夜
   const nights =
     checkIn && checkOut ? (checkOut - checkIn) / (1000 * 60 * 60 * 24) : 0;
 
@@ -132,9 +151,11 @@ export default function DatePickerModal({
                 <div className="month-grid">
                   {days.map((day, index) => {
                     if (!day) {
+                      // 如果当前格子没有日期数据，就渲染一个空白的日历格子
                       return <div key={index} className="day empty" />;
                     }
 
+                    // 判断当前 day 是否在 today 前，用于决定是否禁用
                     const disabled = isBefore(day, today);
 
                     const isStart = checkIn && isSameDay(day, checkIn);
