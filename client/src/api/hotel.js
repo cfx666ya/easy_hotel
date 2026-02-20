@@ -17,15 +17,12 @@ export function getPoiList(city) {
   });
 }
 
-// 新增：获取指定条件下的酒店预览数量（用于预览按钮）
-// 实际上可以直接复用 getHotelList，只需设置 limit=1 且只关注返回的 total
-export function getHotelCountByPoi(poiId, distance) {
-  return request.get('/hotels', {
-    params: {
-      poiId,
-      distance,
-      limit: 1,
-      cursor: 0,
-    },
-  });
+// 获取符合条件的酒店总数（用于预览）
+export async function getHotelCount(params) {
+  const queryString = new URLSearchParams(params).toString();
+  console.log('queryString', queryString);
+
+  const response = await fetch(`/api/hotel-count?${queryString}`);
+  if (!response.ok) throw new Error('Failed to fetch hotel count');
+  return response.json();
 }

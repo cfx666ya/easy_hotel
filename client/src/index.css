@@ -168,6 +168,7 @@ button:focus-visible {
 }
 
 /* ============== filterPannel 相关样式 ==============*/
+
 .filter-panel-wrapper {
   position: relative;
   background: #fff;
@@ -191,6 +192,17 @@ button:focus-visible {
 .filter-item.active {
   color: #1677ff;
   font-weight: 600;
+}
+
+.filter-item.has-filter {
+  color: #007aff; /* 蓝色 */
+  font-weight: 500; /* 稍加粗 */
+}
+
+/* 面板打开时的样式（可根据原设计调整） */
+.filter-item.active {
+  background-color: #f0f0f0; /* 灰色背景 */
+  border-radius: 4px;
 }
 
 /* ===== panel ===== */
@@ -294,4 +306,68 @@ button:focus-visible {
 .right-item.active {
   color: #1677ff;
   font-weight: 600;
+}
+
+/* ============== filterPannel 【排序】相关样式 ==============*/
+/* 排序面板 */
+.sort-panel {
+  padding: 8px 0;
+}
+
+.sort-options {
+  display: flex;
+  flex-direction: column;
+}
+
+.sort-option {
+  padding: 10px 16px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.sort-option:hover {
+  background-color: #f5f5f5;
+}
+
+.sort-option.active {
+  color: #007aff;
+  font-weight: 500;
+  background-color: #e6f7ff;
+}
+
+/* ============== filterPannel 【价格/星级】相关样式 ==============*/
+/* 快速价格按钮激活状态 */
+.quick-price-btn.active {
+  background-color: #007aff; /* 主蓝色 */
+  color: #fff; /* 白色文字 */
+  border-color: #007aff; /* 边框也变为蓝色 */
+}
+
+/* 星级按钮激活状态 */
+.star-btn.active {
+  background-color: #007aff;
+  color: #fff;
+  border-color: #007aff;
+}
+
+/* 可选：增加平滑过渡效果 */
+.quick-price-btn,
+.star-btn {
+  transition: all 0.2s ease;
+}
+
+/* ============== filterPannel 【筛选】相关样式 ==============*/
+.filter-option {
+  display: inline-block;
+  padding: 8px 16px;
+  margin: 4px;
+  border: 1px solid #ddd;
+  border-radius: 16px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.filter-option.active {
+  background-color: #007aff;
+  color: white;
+  border-color: #007aff;
 }

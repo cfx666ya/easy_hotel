@@ -25,12 +25,18 @@ export default function HotelListPage() {
     nights: Number(searchParams.get('nights')) || 1,
     cursor: 0,
     limit: 3,
-    minPrice: searchParams.get('minPrice') || '',
-    maxPrice: searchParams.get('maxPrice') || '',
     score: searchParams.get('score') || '',
-    sortBy: searchParams.get('sortBy') || '',
+    sortBy: searchParams.get('sortBy') || 'score_desc',
     poiId: searchParams.get('poiId') || '',
     distance: searchParams.get('distance') || '',
+    minPrice: searchParams.get('minPrice') || '',
+    maxPrice: searchParams.get('maxPrice') || '',
+    starMin: searchParams.get('starMin') || '',
+    starMax: searchParams.get('starMax') || '',
+    theme: searchParams.get('theme') || '',
+    brand: searchParams.get('brand') || '',
+    facility: searchParams.get('facility') || '',
+    roomType: searchParams.get('roomType') || '',
   });
 
   const [hotelList, setHotelList] = useState([]); // 酒店列表数据
@@ -107,6 +113,12 @@ export default function HotelListPage() {
     query.sortBy,
     query.poiId,
     query.distance,
+    query.starMin,
+    query.starMax,
+    query.theme,
+    query.brand,
+    query.facility,
+    query.roomType,
   ]);
 
   // searchParams 变化时，将 url 参数变化时同步到 query
@@ -120,11 +132,17 @@ export default function HotelListPage() {
       minPrice: searchParams.get('minPrice') || '',
       maxPrice: searchParams.get('maxPrice') || '',
       score: searchParams.get('score') || '',
-      sortBy: searchParams.get('sortBy') || '',
+      sortBy: searchParams.get('sortBy') || 'score_desc',
       cursor: 0,
       limit: searchParams.get('limit') || 3,
       poiId: searchParams.get('poiId') || '',
       distance: searchParams.get('distance') || '',
+      starMin: searchParams.get('starMin') || '',
+      starMax: searchParams.get('starMax') || '',
+      theme: searchParams.get('theme') || '',
+      brand: searchParams.get('brand') || '',
+      facility: searchParams.get('facility') || '',
+      roomType: searchParams.get('roomType') || '',
     };
 
     setQuery(newQuery);

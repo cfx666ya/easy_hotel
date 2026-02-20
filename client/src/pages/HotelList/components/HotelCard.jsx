@@ -31,9 +31,15 @@ export default function HotelCard({ data, keyword }) {
       <h4>
         {highlightText(data.name?.cn || '', keyword)} ({data.name?.en})
       </h4>
-      <p>评分: {data.score}</p>
+      <p>
+        评分: {data.score} 星级: {data.starRating}
+      </p>
       <p>地址: {data.address}</p>
       <p>价格: ¥{data.price}</p>
+      <p>
+        【{data.themeFeatures[0]}】【{data.facilities[0]}】【{data.roomTypes[0]}
+        】
+      </p>
     </div>
   );
 }
