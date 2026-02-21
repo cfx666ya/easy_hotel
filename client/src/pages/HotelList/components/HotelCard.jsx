@@ -1,3 +1,5 @@
+import { useNavigate } from 'react-router-dom';
+
 // 高亮函数
 const highlightText = (text, keyword) => {
   if (!keyword) return text;
@@ -18,6 +20,12 @@ const highlightText = (text, keyword) => {
 };
 
 export default function HotelCard({ data, keyword }) {
+  const navigate = useNavigate();
+
+  const handleClick = () => {
+    navigate(`/hotel-detail/${data.id}`);
+  };
+
   return (
     <div
       className="hotel-card"
@@ -25,9 +33,10 @@ export default function HotelCard({ data, keyword }) {
         border: '1px solid #eee',
         padding: '12px',
         marginBottom: '12px',
+        cursor: 'pointer', // 提示可点击
       }}
+      onClick={handleClick}
     >
-      {/* 这里需要注意数据结构的对应 */}
       <h4>
         {highlightText(data.name?.cn || '', keyword)} ({data.name?.en})
       </h4>

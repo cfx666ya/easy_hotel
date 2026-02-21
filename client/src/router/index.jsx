@@ -40,7 +40,7 @@ function AppRoutes() {
         <Route path="/hotel-list" element={<HotelList />} />
 
         {/* 酒店详情 */}
-        <Route path="/detail/:id" element={<HotelDetail />} />
+        <Route path="/hotel-detail/:id" element={<HotelDetail />} />
 
         {/* 城市选择页 */}
         <Route path="/city-select" element={<CitySelectPage />} />

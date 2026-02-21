@@ -5,11 +5,6 @@ export function getHotelList(params) {
   return request.get('/hotels', { params });
 }
 
-// 原有的获取酒店详情
-export function getHotelDetail(id) {
-  return request.get(`/hotels/${id}`);
-}
-
 // 新增：获取指定城市的 POI 列表
 export function getPoiList(city) {
   return request.get('/pois', {
@@ -24,5 +19,16 @@ export async function getHotelCount(params) {
 
   const response = await fetch(`/api/hotel-count?${queryString}`);
   if (!response.ok) throw new Error('Failed to fetch hotel count');
+  return response.json();
+}
+
+// 原有的获取酒店详情
+// export function getHotelDetail(id) {
+//   return request.get(`/hotels/${id}`);
+// }
+
+export async function getHotelDetail(id) {
+  const response = await fetch(`http://localhost:3000/api/hotels/${id}`);
+  if (!response.ok) throw new Error('获取酒店详情失败');
   return response.json();
 }
