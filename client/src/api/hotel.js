@@ -12,6 +12,13 @@ export function getPoiList(city) {
   });
 }
 
+// 获取指定经纬度的实时天气
+export const getWeather = async (lat, lng) => {
+  const response = await fetch(`/api/weather?lat=${lat}&lng=${lng}`);
+  if (!response.ok) throw new Error('获取天气失败');
+  return response.json();
+};
+
 // 获取符合条件的酒店总数（用于预览）
 export async function getHotelCount(params) {
   const queryString = new URLSearchParams(params).toString();

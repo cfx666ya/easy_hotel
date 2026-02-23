@@ -1,81 +1,79 @@
-import { useState } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { buildHotelListQuery } from '../../../utils/hotelQuery';
+import { getPoiList, getWeather } from '../../../api/hotel'; // 引入新接口
 
-export default function SearchBar({
-  query,
-  keyword,
-  onSearch,
-  onOpenCalendar,
-}) {
+import DatePickerModal from '../../../components/DatePickerModal.jsx';
+import GuestPanel from '../../../components/GuestPanel.jsx';
+
+export default function SearchBar({ query, keyword, onSearch, onDateChange }) {
+  /**
+   * 状态管理
+   */
   const navigate = useNavigate();
-  const [showPanel, setShowPanel] = useState(false);
+  const [showCalendar, setShowCalendar] = useState(false);
+  const [searchParams] = useSearchParams();
+  const [inputValue, setInputValue] = useState(keyword || '');
 
-  /* =========================
-     日期格式化工具函数
-  ========================== */
+  // 房间人数状态
+  const [rooms, setRooms] = useState(1);
+  const [guests, setGuests] = useState(2);
+  const [showGuestPanel, setShowGuestPanel] = useState(false);
 
-  // 判断是否是今天
-  const isToday = (date) => {
-    const today = new Date();
-    return (
-      date.getFullYear() === today.getFullYear() &&
-      date.getMonth() === today.getMonth() &&
-      date.getDate() === today.getDate()
-    );
+  // 新增：POI列表、当前选中的POI、天气信息
+  const [poiList, setPoiList] = useState([]);
+  // const [selectedPoi, setSelectedPoi] = useState(null);
+  const [weather, setWeather] = useState(null);
+
+  /**
+   * 辅助函数相关
+   */
+  // 生成今天的日期字符串（YYYY-MM-DD）
+  const getTodayString = () => {
+    const d = new Date();
+    const year = d.getFullYear();
+    const month = String(d.getMonth() + 1).padStart(2, '0');
+    const day = String(d.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
   };
 
-  // 判断是否是明天
-  const isTomorrow = (date) => {
-    const today = new Date();
-    return (
-      date.getFullYear() === today.getFullYear() &&
-      date.getMonth() === today.getMonth() &&
-      date.getDate() === today.getDate() + 1
-    );
+  // 生成明天的日期字符串
+  const getTomorrowString = () => {
+    const d = new Date();
+    d.setDate(d.getDate() + 1);
+    const year = d.getFullYear();
+    const month = String(d.getMonth() + 1).padStart(2, '0');
+    const day = String(d.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
   };
 
-  // 获取星期
-  const getWeekDay = (date) => {
-    const weeks = ['周日', '周一', '周二', '周三', '周四', '周五', '周六'];
-    return weeks[date.getDay()];
+  // 格式化日期显示为 MM.DD
+  const formatDisplayDate = (dateStr) => {
+    if (!dateStr) return '';
+    const match = dateStr.match(/^(\d{4})-(\d{2})-(\d{2})$/);
+    if (!match) return '';
+    const month = match[2];
+    const day = match[3];
+    return `${month}.${day}`;
   };
 
-  // 格式化成：2月17日（今天） 或 2月21日（周六）
-  const formatDisplayDate = (dateString) => {
-    const date = new Date(dateString);
-
-    const month = date.getMonth() + 1;
-    const day = date.getDate();
-
-    const extra = isToday(date)
-      ? '今天'
-      : isTomorrow(date)
-        ? '明天'
-        : getWeekDay(date);
-
-    return `${month}月${day}日（${extra}）`;
+  // 处理日历确认
+  const handleCalendarConfirm = (checkIn, checkOut, nights) => {
+    onDateChange({ checkIn, checkOut, nights });
+    setShowCalendar(false);
   };
 
-  // 生成完整展示字符串
-  const getDisplayRange = () => {
-    if (!query.checkIn || !query.checkOut) return '请选择日期';
-
-    const checkInText = formatDisplayDate(query.checkIn);
-    const checkOutText = formatDisplayDate(query.checkOut);
-
-    return `${checkInText}-${checkOutText}  共${query.nights}晚`;
+  // 打开日历
+  const handleOpenCalendar = () => {
+    setShowCalendar(true);
   };
 
-  /* ========================= */
-
+  // 返回首页
   const handleBack = () => {
     navigate('/');
   };
 
-  const [searchParams] = useSearchParams();
-
-  // 点击城市
+  // 点击城市区域（跳转城市选择）
   const handleCityClick = () => {
     const currentQuery = {
       city: searchParams.get('city') || '',
@@ -84,19 +82,54 @@ export default function SearchBar({
       checkOut: searchParams.get('checkOut') || '',
       nights: searchParams.get('nights') || '',
     };
-
     const queryString = buildHotelListQuery(currentQuery);
     navigate(`/city-select?${queryString}`);
   };
 
-  // 点击【下弹框】中的确定
-  const handleConfirm = () => {
-    setShowPanel(false);
-  };
+  // 房间人数变更
+  const handleRoomsChange = (newRooms) => setRooms(newRooms);
+  const handleGuestsChange = (newGuests) => setGuests(newGuests);
 
-  // 增加 input 状态
-  const [inputValue, setInputValue] = useState(keyword || '');
+  /**
+   * useMemo 和 useEffect 操作
+   */
+  // 获取当前城市的 POI 列表
+  useEffect(() => {
+    if (!query.city) return;
+    getPoiList(query.city)
+      .then(setPoiList)
+      .catch((err) => console.error('获取POI列表失败:', err));
+  }, [query.city]);
 
+  // 缓存计算结果，依赖 poiList、query.poiId
+  // 当这俩改变时重新计算 selectedPoi 并重新渲染，同时 useEffect 监听会改变天气
+  const selectedPoi = useMemo(() => {
+    if (poiList.length === 0) return null;
+
+    let poi = null;
+
+    if (query.poiId) {
+      poi = poiList.find((p) => p.id === Number(query.poiId));
+    }
+
+    if (!poi) {
+      poi = poiList.find((p) => p.type === 'hot') || poiList[0];
+    }
+
+    return poi;
+  }, [poiList, query.poiId]);
+
+  // 当用户改变 selectedPoi 时，根据选中的 POI 获取天气
+  useEffect(() => {
+    if (!selectedPoi) return;
+    getWeather(selectedPoi.lat, selectedPoi.lng)
+      .then(setWeather)
+      .catch((err) => console.error('获取天气失败:', err));
+  }, [selectedPoi]);
+
+  /**
+   * 页面样式返回
+   */
   return (
     <div className="search-bar">
       {/* 左箭头 */}
@@ -106,13 +139,32 @@ export default function SearchBar({
 
       {/* 搜索框 */}
       <div className="search-box">
-        {/* 左部分 */}
-        <div className="search-info" onClick={() => setShowPanel(!showPanel)}>
-          <div className="city">{query.city}</div>
-          <div className="date">{getDisplayRange()}</div>
+        {/* 左侧：城市+地点 + 天气 */}
+        <div className="panel-city" onClick={handleCityClick}>
+          <div className="city-poi">
+            {query.city}
+            {selectedPoi && `·${selectedPoi.name}`}
+          </div>
+          {weather && (
+            <div className="weather">
+              {weather.weather}·{weather.temperature}℃
+            </div>
+          )}
         </div>
 
-        {/* 右部分 */}
+        {/* 日期显示区域（点击打开日历） */}
+        <div className="date-display" onClick={handleOpenCalendar}>
+          <div className="date-item">{formatDisplayDate(query.checkIn)}</div>
+          <div className="date-item">{formatDisplayDate(query.checkOut)}</div>
+        </div>
+
+        {/* 间数人数显示区域（点击打开GuestPanel） */}
+        <div className="guest-display" onClick={() => setShowGuestPanel(true)}>
+          <div className="guest-item">{rooms}间</div>
+          <div className="guest-item">{guests}人</div>
+        </div>
+
+        {/* 右侧：搜索输入框部分 */}
         <div className="search-keyword-box">
           <input
             type="text"
@@ -120,33 +172,35 @@ export default function SearchBar({
             value={inputValue}
             onChange={(e) => setInputValue(e.target.value)}
           />
-
           {inputValue && (
             <span className="clear-btn" onClick={() => setInputValue('')}>
               ✖
             </span>
           )}
-
           <button className="search-btn" onClick={() => onSearch(inputValue)}>
             搜索
           </button>
         </div>
       </div>
 
-      {/* 下拉弹框 */}
-      {showPanel && (
-        <div className="dropdown-panel">
-          <div className="panel-city" onClick={handleCityClick}>
-            {query.city}
-          </div>
+      {/* 日历模态框 */}
+      <DatePickerModal
+        visible={showCalendar}
+        onClose={() => setShowCalendar(false)}
+        defaultCheckIn={query.checkIn || getTodayString()}
+        defaultCheckOut={query.checkOut || getTomorrowString()}
+        onConfirm={handleCalendarConfirm}
+      />
 
-          <div className="panel-date" onClick={onOpenCalendar}>
-            {getDisplayRange()}
-          </div>
-
-          <button onClick={handleConfirm}>确定</button>
-        </div>
-      )}
+      {/* GuestPanel弹窗 */}
+      <GuestPanel
+        visible={showGuestPanel}
+        onClose={() => setShowGuestPanel(false)}
+        rooms={rooms}
+        guests={guests}
+        onRoomsChange={handleRoomsChange}
+        onGuestsChange={handleGuestsChange}
+      />
     </div>
   );
 }

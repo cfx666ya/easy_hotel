@@ -11,8 +11,6 @@ import AppRoutes from './router/index.jsx';
 function App() {
   return (
     <div>
-      <h1>Easy Hotel</h1>
-
       {/* 主内容区 */}
       <AppRoutes />
     </div>

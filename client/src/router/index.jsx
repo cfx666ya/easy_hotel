@@ -10,9 +10,7 @@ import { lazy, Suspense } from 'react';
 const Home = lazy(() => import('../pages/Home'));
 const HotelList = lazy(() => import('../pages/HotelList'));
 const HotelDetail = lazy(() => import('../pages/HotelDetail'));
-const CitySelectPage = lazy(
-  () => import('../pages/HotelList/components/CitySelectPage'),
-);
+const CitySelectPage = lazy(() => import('../components/CitySelectPage'));
 const SearchPage = lazy(() => import('../pages/SearchPage'));
 
 /* ==================== 加载中组件 ==================== */

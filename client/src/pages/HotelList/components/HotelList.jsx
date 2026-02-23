@@ -7,7 +7,7 @@
  */
 
 import { useEffect, useRef, useCallback } from 'react';
-import HotelCard from './HotelCard';
+import HotelCard from '../../../components/HotelCard.jsx';
 import useDebounce from '../../../hooks/useDebounce.jsx';
 
 export default function HotelList({
