@@ -181,5 +181,5 @@ npm run start
 
 ## 在线演示
 
-- 用户端地址：（填写你的部署地址）
-- 管理后台：（填写你的部署地址）
+- 用户端地址：https://www.bilibili.com/video/BV121feBdEZx/?share_source=copy_web&vd_source=72b92bf2f7319b1f49cf49d75e51057e
+- 管理后台：https://www.bilibili.com/video/BV1GBA6z8EZy/?share_source=copy_web&vd_source=72b92bf2f7319b1f49cf49d75e51057e
