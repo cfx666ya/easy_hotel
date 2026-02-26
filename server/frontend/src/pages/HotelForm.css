@@ -1,0 +1,93 @@
+.hotel-form {}
+
+.section-title {
+  font-size: 15px;
+  margin-bottom: 16px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--cream-dark);
+  color: var(--ink-light);
+}
+
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--cream-dark);
+}
+
+.facilities-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  gap: 8px;
+}
+
+.facility-item {
+  padding: 8px 12px;
+  border: 1px solid var(--cream-dark);
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 13px;
+  text-align: center;
+  color: var(--stone);
+  transition: all 0.15s;
+  background: var(--cream);
+  user-select: none;
+}
+.facility-item:hover { border-color: var(--gold); color: var(--gold-dark); }
+.facility-item.checked { border-color: var(--gold); background: rgba(201,168,76,0.1); color: var(--gold-dark); font-weight: 500; }
+
+/* 房型卡片 */
+.room-card {
+  border: 1px solid var(--cream-dark);
+  border-radius: 8px;
+  padding: 18px;
+  margin-bottom: 14px;
+  background: var(--cream);
+  transition: border-color 0.2s;
+}
+.room-card:hover { border-color: var(--stone-light); }
+
+.room-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 14px;
+}
+
+.room-index {
+  font-weight: 600;
+  font-size: 14px;
+  color: var(--gold-dark);
+}
+
+/* 旧版图片预览（兼容保留） */
+.image-preview-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  gap: 10px;
+  margin-top: 10px;
+}
+.image-preview {
+  position: relative;
+  border-radius: 6px;
+  overflow: hidden;
+  border: 1px solid var(--cream-dark);
+}
+.image-preview img { width: 100%; height: 80px; object-fit: cover; display: block; }
+.image-remove {
+  position: absolute;
+  top: 4px; right: 4px;
+  background: rgba(0,0,0,0.6);
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 20px; height: 20px;
+  cursor: pointer;
+  font-size: 14px;
+  line-height: 20px;
+  text-align: center;
+  padding: 0;
+}
+.image-remove:hover { background: var(--red); }
