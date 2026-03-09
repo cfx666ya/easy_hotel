@@ -1,0 +1,1020 @@
+:root {
+  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+
+  color-scheme: light dark;
+  color: rgba(255, 255, 255, 0.87);
+  background-color: #242424;
+
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+a {
+  font-weight: 500;
+  color: #646cff;
+  text-decoration: inherit;
+}
+a:hover {
+  color: #535bf2;
+}
+
+body {
+  margin: 0;
+  display: flex;
+  place-items: center;
+  min-width: 320px;
+  min-height: 100vh;
+}
+
+h1 {
+  font-size: 3.2em;
+  line-height: 1.1;
+}
+
+button {
+  border-radius: 8px;
+  border: 1px solid transparent;
+  padding: 0.6em 1.2em;
+  font-size: 1em;
+  font-weight: 500;
+  font-family: inherit;
+  background-color: #1a1a1a;
+  cursor: pointer;
+  transition: border-color 0.25s;
+}
+button:hover {
+  border-color: #646cff;
+}
+button:focus,
+button:focus-visible {
+  outline: 4px auto -webkit-focus-ring-color;
+}
+
+@media (prefers-color-scheme: light) {
+  :root {
+    color: #213547;
+    background-color: #ffffff;
+  }
+  a:hover {
+    color: #747bff;
+  }
+  button {
+    background-color: #f9f9f9;
+  }
+}
+
+/* ============== Home 页相关样式 ==============*/
+
+.banner-wrapper {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+}
+
+.banner-container {
+  display: flex;
+  transition: transform 0.4s ease;
+}
+
+.banner-item {
+  min-width: 100%;
+  height: 180px;
+  flex-shrink: 0;
+}
+
+.banner-item img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 12px;
+}
+
+/* 左右按钮 */
+.banner-btn {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(0, 0, 0, 0.3);
+  border: none;
+  color: white;
+  font-size: 20px;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+}
+
+.banner-btn.left {
+  left: 10px;
+}
+
+.banner-btn.right {
+  right: 10px;
+}
+
+.dots {
+  position: absolute;
+  bottom: 10px;
+  width: 100%;
+  text-align: center;
+}
+
+.dot {
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  margin: 0 4px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.5);
+}
+
+.dot.active {
+  background: white;
+}
+
+/* ============== HotelListPage相关样式 ==============*/
+
+.search-box {
+  display: flex;
+  align-items: center;
+}
+.date-display,
+.guest-display {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 0 8px;
+  cursor: pointer;
+}
+.search-keyword-box {
+  flex: 1;
+  display: flex;
+  align-items: center;
+}
+
+/* ============== 日历相关样式 ==============*/
+.calendar-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.4);
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+  z-index: 1000;
+}
+
+.calendar-container {
+  width: 100%;
+  height: 85%;
+  background: #fff;
+  border-radius: 16px 16px 0 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.calendar-top-bar {
+  position: relative;
+  text-align: center;
+  padding: 16px;
+  font-weight: 600;
+  border-bottom: 1px solid #eee;
+}
+
+.close-btn {
+  position: absolute;
+  left: 16px;
+  cursor: pointer;
+}
+
+.week-bar {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  text-align: center;
+  padding: 8px 0;
+  background: #fff;
+  border-bottom: 1px solid #eee;
+}
+
+.calendar-scroll {
+  flex: 1;
+  overflow-y: auto;
+}
+
+.month-header {
+  position: sticky;
+  top: 0;
+  background: #fff;
+  padding: 8px 16px;
+  font-weight: 600;
+  z-index: 5;
+}
+
+.month-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  padding: 0 8px 16px;
+}
+
+.day {
+  text-align: center;
+  padding: 10px 0;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.day.disabled {
+  color: #ccc;
+  pointer-events: none;
+}
+
+.day.start,
+.day.end {
+  background: #007aff;
+  color: #fff;
+}
+
+.day.in-range {
+  background: #e6f0ff;
+}
+
+.calendar-footer {
+  padding: 16px;
+  border-top: 1px solid #eee;
+}
+
+.calendar-footer button {
+  width: 100%;
+  padding: 12px;
+  border-radius: 24px;
+  border: none;
+  background: #007aff;
+  color: white;
+  font-size: 16px;
+}
+
+/* ============== filterPannel 相关样式 ==============*/
+
+.filter-panel-wrapper {
+  position: relative;
+  background: #fff;
+}
+
+/* ===== 顶部 bar ===== */
+.filter-bar {
+  display: flex;
+  border-bottom: 1px solid #eee;
+  background: #fff;
+}
+
+.filter-item {
+  flex: 1;
+  text-align: center;
+  padding: 12px 0;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.filter-item.active {
+  color: #1677ff;
+  font-weight: 600;
+}
+
+.filter-item.has-filter {
+  color: #007aff; /* 蓝色 */
+  font-weight: 500; /* 稍加粗 */
+}
+
+/* 面板打开时的样式（可根据原设计调整） */
+.filter-item.active {
+  background-color: #f0f0f0; /* 灰色背景 */
+  border-radius: 4px;
+}
+
+/* ===== panel ===== */
+.panel {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  width: 100%;
+  background: #fff;
+  border-top: 1px solid #eee;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  z-index: 100;
+}
+
+/* 内容区域 */
+.panel-content {
+  display: flex;
+  height: 300px;
+}
+
+/* 左侧 */
+.left-nav {
+  width: 120px;
+  background: #f5f5f5;
+  overflow-y: auto;
+}
+
+.left-nav-item {
+  padding: 12px;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.left-nav-item.active {
+  background: #fff;
+  color: #1677ff;
+  font-weight: 600;
+}
+
+/* 右侧 */
+.right-content {
+  flex: 1;
+  padding: 12px;
+  overflow-y: auto;
+}
+
+.right-item {
+  padding: 10px 0;
+  border-bottom: 1px solid #f0f0f0;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+/* ===== 底部按钮 ===== */
+.panel-footer {
+  display: flex;
+  justify-content: space-between;
+  padding: 12px;
+  border-top: 1px solid #eee;
+}
+
+.clear-btn {
+  background: #fff;
+  border: 1px solid #ddd;
+  padding: 6px 16px;
+  cursor: pointer;
+}
+
+.confirm-btn {
+  background: #1677ff;
+  color: #fff;
+  border: none;
+  padding: 6px 16px;
+  cursor: pointer;
+}
+
+/* ===== 距离 bar ===== */
+.distance-bar {
+  display: flex;
+  justify-content: space-around;
+  padding: 10px 0;
+  background: #fff;
+  border-bottom: 1px solid #eee;
+}
+
+.distance-item {
+  padding: 6px 12px;
+  border: 1px solid #ddd;
+  border-radius: 20px;
+  cursor: pointer;
+  font-size: 12px;
+}
+
+.distance-item.active {
+  background: #1677ff;
+  color: #fff;
+  border-color: #1677ff;
+}
+
+/* 右侧选中高亮 */
+.right-item.active {
+  color: #1677ff;
+  font-weight: 600;
+}
+
+/* ============== filterPannel 【排序】相关样式 ==============*/
+/* 排序面板 */
+.sort-panel {
+  padding: 8px 0;
+}
+
+.sort-options {
+  display: flex;
+  flex-direction: column;
+}
+
+.sort-option {
+  padding: 10px 16px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.sort-option:hover {
+  background-color: #f5f5f5;
+}
+
+.sort-option.active {
+  color: #007aff;
+  font-weight: 500;
+  background-color: #e6f7ff;
+}
+
+/* ============== filterPannel 【价格/星级】相关样式 ==============*/
+/* 快速价格按钮激活状态 */
+.quick-price-btn.active {
+  background-color: #007aff; /* 主蓝色 */
+  color: #fff; /* 白色文字 */
+  border-color: #007aff; /* 边框也变为蓝色 */
+}
+
+/* 星级按钮激活状态 */
+.star-btn.active {
+  background-color: #007aff;
+  color: #fff;
+  border-color: #007aff;
+}
+
+/* 可选：增加平滑过渡效果 */
+.quick-price-btn,
+.star-btn {
+  transition: all 0.2s ease;
+}
+
+/* ============== filterPannel 【筛选】相关样式 ==============*/
+.filter-option {
+  display: inline-block;
+  padding: 8px 16px;
+  margin: 4px;
+  border: 1px solid #ddd;
+  border-radius: 16px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.filter-option.active {
+  background-color: #007aff;
+  color: white;
+  border-color: #007aff;
+}
+
+/* ============== HotelDetail 页面相关样式 ==============*/
+.hotel-detail-page {
+  max-width: 600px;
+  margin: 0 auto;
+  font-family: sans-serif;
+}
+
+.detail-header {
+  display: flex;
+  align-items: center;
+  padding: 12px;
+  background: #fff;
+  border-bottom: 1px solid #eee;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.back-arrow {
+  font-size: 24px;
+  margin-right: 12px;
+  cursor: pointer;
+}
+
+.hotel-name {
+  font-size: 18px;
+  margin: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.image-banner {
+  width: 100%;
+  overflow-x: auto;
+  white-space: nowrap;
+  -webkit-overflow-scrolling: touch;
+}
+
+.banner-scroll {
+  display: inline-flex;
+}
+
+.banner-image {
+  width: 100%;
+  max-width: 600px;
+  height: 250px;
+  object-fit: cover;
+  margin-right: 2px;
+}
+
+.hotel-info {
+  padding: 16px;
+  border-bottom: 1px solid #eee;
+}
+
+.en-name {
+  font-size: 14px;
+  color: #666;
+  margin-left: 8px;
+}
+
+.star-rating {
+  color: #ffb800;
+  margin: 4px 0;
+}
+
+.facilities {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 8px 0;
+}
+
+.facility-tag {
+  background: #f5f5f5;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+}
+
+.more {
+  font-size: 12px;
+  color: #999;
+  align-self: center;
+}
+
+.address {
+  color: #666;
+  font-size: 14px;
+}
+
+.booking-bar {
+  display: flex;
+  padding: 16px;
+  border-bottom: 1px solid #eee;
+  background: #fafafa;
+}
+
+.date-selector,
+.guest-selector {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.date-selector {
+  border-right: 1px solid #ddd;
+  padding-right: 16px;
+  margin-right: 16px;
+}
+
+.label {
+  font-size: 12px;
+  color: #999;
+  margin-bottom: 4px;
+}
+
+.value {
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.room-list {
+  padding: 16px;
+}
+
+.room-card-placeholder {
+  background: #f0f0f0;
+  height: 100px;
+  margin-bottom: 12px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #aaa;
+}
+
+.loading,
+.error {
+  text-align: center;
+  padding: 50px;
+  font-size: 16px;
+}
+.error {
+  color: red;
+}
+.room-card {
+  display: flex;
+  margin-bottom: 16px;
+  padding: 12px;
+  border: 1px solid #eee;
+  border-radius: 8px;
+}
+.room-image {
+  width: 120px;
+  height: 90px;
+  object-fit: cover;
+  border-radius: 4px;
+  margin-right: 12px;
+}
+.room-info {
+  flex: 1;
+}
+.room-theme {
+  margin: 4px 0;
+}
+.theme-tag {
+  background: #e6f7ff;
+  color: #1890ff;
+  padding: 2px 6px;
+  border-radius: 4px;
+  margin-right: 6px;
+  font-size: 12px;
+}
+.room-price .price {
+  font-size: 18px;
+  font-weight: bold;
+  color: #ff5a5f;
+}
+.room-available {
+  font-size: 12px;
+  color: #999;
+  margin-top: 4px;
+}
+
+/* GuestPanel 样式 */
+.guest-panel-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: flex-end;
+  z-index: 1000;
+}
+
+.guest-panel {
+  width: 100%;
+  background: #fff;
+  border-radius: 16px 16px 0 0;
+  padding: 16px;
+  box-sizing: border-box;
+  animation: slide-up 0.3s ease;
+}
+
+.sub-panel-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: flex-end;
+  z-index: 1100;
+}
+
+.sub-panel {
+  width: 100%;
+  background: #fff;
+  border-radius: 16px 16px 0 0;
+  padding: 16px;
+  box-sizing: border-box;
+  animation: slide-up 0.3s ease;
+}
+
+@keyframes slide-up {
+  from {
+    transform: translateY(100%);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+
+.panel-header {
+  display: flex;
+  align-items: center;
+  padding-bottom: 16px;
+  border-bottom: 1px solid #eee;
+  position: relative;
+}
+
+.close-btn {
+  font-size: 20px;
+  cursor: pointer;
+  padding: 4px;
+  margin-right: 12px;
+}
+
+.panel-header .title {
+  font-size: 16px;
+  font-weight: 500;
+  flex: 1;
+  text-align: center;
+  margin-right: 28px; /* 平衡关闭按钮 */
+}
+
+.panel-content {
+  padding: 20px 0;
+}
+
+.selector-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.selector-row .label {
+  font-size: 16px;
+}
+
+.stepper {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.stepper-btn {
+  width: 36px;
+  height: 36px;
+  border-radius: 18px;
+  border: 1px solid #ddd;
+  background: #f9f9f9;
+  font-size: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.stepper-btn:not(.disabled):active {
+  background: #e0e0e0;
+}
+
+.stepper-btn.disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+.stepper-value {
+  min-width: 24px;
+  text-align: center;
+  font-size: 18px;
+  font-weight: 500;
+  cursor: pointer;
+  padding: 4px 8px;
+  background: #f0f0f0;
+  border-radius: 20px;
+}
+
+.done-btn {
+  width: 100%;
+  padding: 14px;
+  background: #007aff;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  margin-top: 8px;
+}
+
+.done-btn:active {
+  background: #005bbf;
+}
+
+.number-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 12px;
+  padding: 20px 0;
+}
+
+.grid-btn {
+  padding: 14px 0;
+  background: #f5f5f5;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.grid-btn.active {
+  background: #007aff;
+  color: #fff;
+  border-color: #007aff;
+}
+
+.grid-btn:active {
+  background: #e0e0e0;
+}
+
+/* ============== HotelDetail 中 filterbar 相关样式 ==============*/
+/* 筛选条 */
+.filter-bar {
+  display: flex;
+  align-items: center;
+  padding: 12px 16px;
+  background: #fff;
+  border-bottom: 1px solid #eee;
+}
+
+.scroll-buttons {
+  flex: 1;
+  overflow-x: auto;
+  white-space: nowrap;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none; /* Firefox隐藏滚动条 */
+}
+
+.scroll-buttons::-webkit-scrollbar {
+  display: none; /* Chrome/Safari隐藏滚动条 */
+}
+
+.scroll-buttons button {
+  display: inline-block;
+  padding: 8px 16px;
+  margin-right: 8px;
+  background: #f5f5f5;
+  border: 1px solid #ddd;
+  border-radius: 20px;
+  font-size: 14px;
+  color: #333;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.scroll-buttons button.active {
+  background: #007aff;
+  color: #fff;
+  border-color: #007aff;
+}
+
+.filter-btn {
+  padding: 8px 16px;
+  background: #f5f5f5;
+  border: 1px solid #ddd;
+  border-radius: 20px;
+  font-size: 14px;
+  color: #333;
+  cursor: pointer;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+
+.filter-btn.active {
+  background: #007aff;
+  color: #fff;
+  border-color: #007aff;
+}
+
+/* 筛选面板 */
+.filter-panel-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: flex-end;
+  z-index: 1200;
+}
+
+.filter-panel {
+  width: 100%;
+  max-height: 80%;
+  background: #fff;
+  border-radius: 16px 16px 0 0;
+  overflow-y: auto;
+  animation: slide-up 0.3s ease;
+}
+
+.filter-content {
+  padding: 16px;
+}
+
+.filter-section {
+  margin-bottom: 24px;
+}
+
+.filter-section h4 {
+  margin-bottom: 12px;
+  font-size: 16px;
+  font-weight: 500;
+}
+
+.filter-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.filter-buttons .filter-btn {
+  padding: 8px 16px;
+  background: #f5f5f5;
+  border: 1px solid #ddd;
+  border-radius: 20px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.filter-buttons .filter-btn.active {
+  background: #007aff;
+  color: #fff;
+  border-color: #007aff;
+}
+
+.price-slider {
+  margin: 16px 0;
+}
+
+.price-inputs {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 16px 0;
+}
+
+.price-inputs input {
+  width: 80px;
+  padding: 8px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  text-align: center;
+}
+
+.quick-price-buttons {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px;
+  margin-top: 16px;
+}
+
+.quick-price-btn {
+  padding: 10px;
+  background: #f5f5f5;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.quick-price-btn:active {
+  background: #e0e0e0;
+}
+
+.filter-actions {
+  display: flex;
+  gap: 12px;
+  padding: 16px;
+  border-top: 1px solid #eee;
+}
+
+.filter-actions button {
+  flex: 1;
+  padding: 14px;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.clear-btn {
+  background: #f5f5f5;
+  color: #333;
+}
+
+.confirm-btn {
+  background: #007aff;
+  color: #fff;
+}
+
+.clear-btn:active {
+  background: #e0e0e0;
+}
+
+.confirm-btn:active {
+  background: #005bbf;
+}
+
+.no-rooms {
+  text-align: center;
+  padding: 40px;
+  color: #999;
+  font-size: 14px;
+}

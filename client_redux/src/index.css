@@ -1,0 +1,93 @@
+/* ===== 根组件相关 ===== */
+html,
+body,
+#root {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  background: #fff;
+}
+
+/* ===== HotelListPage 页面 FilterBar ===== */
+.filter-panel-wrapper {
+  position: relative;
+  background: #fff;
+  padding-bottom: 25px;
+}
+
+.filter-bar {
+  display: flex;
+  align-items: center;
+  background: #fff;
+  position: relative;
+}
+
+.filter-item {
+  flex: 1;
+  text-align: center;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.filter-item.active {
+  color: #1677ff;
+  font-weight: 600;
+}
+
+.filter-item.has-filter {
+  color: #007aff; /* 蓝色 */
+  font-weight: 500; /* 稍加粗 */
+}
+
+.scroll-buttons {
+  flex: 1;
+  overflow-x: auto;
+  white-space: nowrap;
+  -webkit-overflow-scrolling: touch;
+  padding-right: 60px;
+  scrollbar-width: none; /* Firefox隐藏滚动条 */
+}
+
+.scroll-buttons::-webkit-scrollbar {
+  display: none; /* Chrome/Safari隐藏滚动条 */
+}
+
+.scroll-buttons button {
+  display: inline-block;
+  padding: 8px 16px;
+  margin-right: 8px;
+  background: #f5f5f5;
+  border: 1px solid #ddd;
+  border-radius: 20px;
+  font-size: 14px;
+  color: #333;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.scroll-buttons button.active {
+  background: #007aff;
+  color: #fff;
+  border-color: #007aff;
+}
+
+.filter-btn {
+  margin-left: 10px;
+  padding: 8px 16px;
+  background: #ffffff;
+  border: 1px solid #ffffff;
+  font-size: 16px;
+  font-weight: 600;
+  color: #333;
+  cursor: pointer;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+
+.filter-btn.active {
+  color: #1677ff;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+/* ===== HotelListPage 页面 HotelDetailFilterPanel ===== */
